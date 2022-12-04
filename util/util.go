@@ -90,9 +90,14 @@ func AbsInt(i int) int {
 	return i
 }
 
-func Btoi(s string) int64 {
+func ParseInt[T int64 | int32 | int](s string) T {
+	i, _ := strconv.ParseInt(s, 10, 64)
+	return T(i)
+}
+
+func Btoi[T int64 | int32 | int](s string) T {
 	i, _ := strconv.ParseInt(s, 2, 64)
-	return i
+	return T(i)
 }
 
 func PowInt(x, y int) int {
