@@ -3,7 +3,7 @@ package maps
 import "C"
 import (
 	"container/heap"
-	"github.com/mbark/advent-of-code-2021/util"
+	"github.com/mbark/advent-of-code-2022/util"
 	"strconv"
 	"strings"
 )
@@ -222,8 +222,8 @@ func (m IntMap) Length() int {
 
 type CoordinateItem struct {
 	Coordinate Coordinate
-	Priority int
-	Index    int
+	Priority   int
+	Index      int
 }
 
 type PriorityQueue []*CoordinateItem
@@ -262,4 +262,3 @@ func (pq *PriorityQueue) Update(item *CoordinateItem, value Coordinate, priority
 	item.Priority = priority
 	heap.Fix(pq, item.Index)
 }
-

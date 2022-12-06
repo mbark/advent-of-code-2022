@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mbark/advent-of-code-2021/util"
+	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
 
@@ -22,14 +22,8 @@ func main() {
 		left, right := strings.Split(split[0], "-"), strings.Split(split[1], "-")
 
 		assignments = append(assignments, assignment{
-			left: pair{
-				start: util.ParseInt[int](left[0]),
-				end:   util.ParseInt[int](left[1]),
-			},
-			right: pair{
-				start: util.ParseInt[int](right[0]),
-				end:   util.ParseInt[int](right[1]),
-			},
+			left:  pair{start: util.ParseInt[int](left[0]), end: util.ParseInt[int](left[1])},
+			right: pair{start: util.ParseInt[int](right[0]), end: util.ParseInt[int](right[1])},
 		})
 	}
 

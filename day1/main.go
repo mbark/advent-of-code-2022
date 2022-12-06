@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mbark/advent-of-code-2021/util"
+	"github.com/mbark/advent-of-code-2022/util"
 	"sort"
 	"strconv"
 )

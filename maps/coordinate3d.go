@@ -2,7 +2,7 @@ package maps
 
 import (
 	"fmt"
-	"github.com/mbark/advent-of-code-2021/util"
+	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
 
@@ -121,4 +121,3 @@ func (r RotationFacing) Apply(c Coordinate3D) Coordinate3D {
 func (c Coordinate3D) ApplyRotation(x, y, z int) Coordinate3D {
 	return Coordinate3D{X: x * c.X, Y: y * c.Y, Z: z * c.Z}
 }
-

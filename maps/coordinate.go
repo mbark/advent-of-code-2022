@@ -2,7 +2,7 @@ package maps
 
 import (
 	"fmt"
-	"github.com/mbark/advent-of-code-2021/util"
+	"github.com/mbark/advent-of-code-2022/util"
 )
 
 type Coordinate struct {
