@@ -18,7 +18,7 @@ func main() {
 	fmt.Printf("second: %d\n", second(m))
 }
 
-func first(m maps.IntMap) int {
+func first(m maps.Map[int]) int {
 	visible := make(map[maps.Coordinate]bool)
 
 	// left and right
@@ -82,7 +82,7 @@ func first(m maps.IntMap) int {
 	return len(visible)
 }
 
-func second(m maps.IntMap) int {
+func second(m maps.Map[int]) int {
 	var max int
 	var maxAt maps.Coordinate
 	for y := 0; y < m.Rows; y++ {
@@ -100,7 +100,7 @@ func second(m maps.IntMap) int {
 	return max
 }
 
-func scenicScore(m maps.IntMap, at maps.Coordinate) int {
+func scenicScore(m maps.Map[int], at maps.Coordinate) int {
 	tree := m.At(at)
 
 	var up, down, right, left int

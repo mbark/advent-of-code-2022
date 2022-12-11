@@ -3,22 +3,22 @@ package maps
 import "C"
 import (
 	"container/heap"
+	"fmt"
 	"github.com/mbark/advent-of-code-2022/util"
-	"strconv"
 	"strings"
 )
 
-type IntMap struct {
+type Map[T any] struct {
 	Columns int
 	Rows    int
-	Cells   [][]int
+	Cells   [][]T
 }
 
-func (m IntMap) ArraySize() int {
+func (m Map[T]) ArraySize() int {
 	return (m.Rows + 1) * (m.Columns + 1)
 }
 
-func NewIntMap(definition string) IntMap {
+func NewIntMap(definition string) Map[int] {
 	var cells [][]int
 
 	var rows, cols int
@@ -33,10 +33,10 @@ func NewIntMap(definition string) IntMap {
 		cells = append(cells, row)
 	}
 
-	return IntMap{Columns: cols + 1, Rows: rows + 1, Cells: cells}
+	return Map[int]{Columns: cols + 1, Rows: rows + 1, Cells: cells}
 }
 
-func MapFromCoordinates(coordinates []Coordinate) IntMap {
+func MapFromCoordinates(coordinates []Coordinate) Map[int] {
 	var rows, cols int
 	for _, c := range coordinates {
 		if c.Y > rows {
@@ -58,18 +58,18 @@ func MapFromCoordinates(coordinates []Coordinate) IntMap {
 		cells[c.Y][c.X] = 1
 	}
 
-	return IntMap{Columns: cols, Rows: rows, Cells: cells}
+	return Map[int]{Columns: cols, Rows: rows, Cells: cells}
 }
 
-func (m IntMap) WithPadding(n, e, s, w int) IntMap {
-	newm := IntMap{
+func (m Map[T]) WithPadding(n, e, s, w int) Map[T] {
+	newm := Map[T]{
 		Columns: e + m.Columns + w,
 		Rows:    n + m.Rows + s,
 	}
 
-	cells := make([][]int, newm.Rows)
+	cells := make([][]T, newm.Rows)
 	for i := range cells {
-		cells[i] = make([]int, newm.Columns)
+		cells[i] = make([]T, newm.Columns)
 	}
 
 	for _, c := range m.Coordinates() {
@@ -80,15 +80,15 @@ func (m IntMap) WithPadding(n, e, s, w int) IntMap {
 	return newm
 }
 
-func (m IntMap) At(c Coordinate) int {
+func (m Map[T]) At(c Coordinate) T {
 	return m.Cells[c.Y][c.X]
 }
 
-func (m IntMap) ArrPos(c Coordinate) int {
+func (m Map[T]) ArrPos(c Coordinate) int {
 	return c.Y*m.Rows + c.X
 }
 
-func (m IntMap) Coordinates() []Coordinate {
+func (m Map[T]) Coordinates() []Coordinate {
 	coordinates := make([]Coordinate, m.Length())
 	for y, row := range m.Cells {
 		for x := range row {
@@ -99,11 +99,11 @@ func (m IntMap) Coordinates() []Coordinate {
 	return coordinates
 }
 
-func (m IntMap) CopyWith(fn func(val int) int) IntMap {
-	cells := make([][]int, len(m.Cells))
+func (m Map[T]) CopyWith(fn func(val T) T) Map[T] {
+	cells := make([][]T, len(m.Cells))
 
 	for i := range m.Cells {
-		row := make([]int, len(m.Cells[i]))
+		row := make([]T, len(m.Cells[i]))
 		for j, cell := range m.Cells[i] {
 			row[j] = fn(cell)
 		}
@@ -111,11 +111,11 @@ func (m IntMap) CopyWith(fn func(val int) int) IntMap {
 		cells[i] = row
 	}
 
-	return IntMap{Columns: m.Columns, Rows: m.Rows, Cells: cells}
+	return Map[T]{Columns: m.Columns, Rows: m.Rows, Cells: cells}
 }
 
-func Merged(maps [][]IntMap) IntMap {
-	var cells [][]int
+func Merged[T any](maps [][]Map[T]) Map[T] {
+	var cells [][]T
 	var columns, rows int
 
 	for _, row := range maps {
@@ -129,7 +129,7 @@ func Merged(maps [][]IntMap) IntMap {
 	for _, mapRow := range maps {
 		// for each row in the map
 		for i := 0; i < mapRow[0].Rows; i++ {
-			var row []int
+			var row []T
 			for _, mapCol := range mapRow {
 				row = append(row, mapCol.Cells[i]...)
 			}
@@ -138,23 +138,19 @@ func Merged(maps [][]IntMap) IntMap {
 		}
 	}
 
-	return IntMap{Columns: columns, Rows: rows, Cells: cells}
+	return Map[T]{Columns: columns, Rows: rows, Cells: cells}
 }
 
-func (m *IntMap) Set(c Coordinate, val int) {
+func (m *Map[T]) Set(c Coordinate, val T) {
 	m.Cells[c.Y][c.X] = val
 }
 
-func (m *IntMap) Inc(c Coordinate) {
-	m.Cells[c.Y][c.X] += 1
-}
-
-func (m IntMap) Exists(c Coordinate) bool {
+func (m Map[T]) Exists(c Coordinate) bool {
 	return c.X >= 0 && c.X < m.Columns &&
 		c.Y >= 0 && c.Y < m.Rows
 }
 
-func (m IntMap) filterNonExistent(coords []Coordinate) []Coordinate {
+func (m Map[T]) filterNonExistent(coords []Coordinate) []Coordinate {
 	var cs []Coordinate
 	for _, c := range coords {
 		if m.Exists(c) {
@@ -165,7 +161,7 @@ func (m IntMap) filterNonExistent(coords []Coordinate) []Coordinate {
 	return cs
 }
 
-func (m IntMap) Adjacent(c Coordinate) []Coordinate {
+func (m Map[T]) Adjacent(c Coordinate) []Coordinate {
 	coordinates := make([]Coordinate, 4)
 	var at int
 	for _, x := range []int{-1, 1} {
@@ -186,7 +182,7 @@ func (m IntMap) Adjacent(c Coordinate) []Coordinate {
 	return coordinates[:at]
 }
 
-func (m IntMap) Surrounding(c Coordinate) []Coordinate {
+func (m Map[T]) Surrounding(c Coordinate) []Coordinate {
 	var coordinates []Coordinate
 	for _, x := range []int{-1, 0, 1} {
 		for _, y := range []int{-1, 0, 1} {
@@ -204,11 +200,11 @@ func (m IntMap) Surrounding(c Coordinate) []Coordinate {
 	return coordinates
 }
 
-func (m IntMap) String() string {
+func (m Map[T]) String() string {
 	var sb strings.Builder
 	for _, row := range m.Cells {
 		for _, cell := range row {
-			sb.WriteString(strconv.Itoa(cell))
+			sb.WriteString(fmt.Sprintf("%s", cell))
 		}
 		sb.WriteString("\n")
 	}
@@ -216,7 +212,7 @@ func (m IntMap) String() string {
 	return sb.String()
 }
 
-func (m IntMap) Length() int {
+func (m Map[T]) Length() int {
 	return m.Rows * m.Columns
 }
 
