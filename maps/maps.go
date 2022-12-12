@@ -36,6 +36,24 @@ func NewIntMap(definition string) Map[int] {
 	return Map[int]{Columns: cols + 1, Rows: rows + 1, Cells: cells}
 }
 
+func New[T any](definition string, fn func(x, y int, b byte) T) Map[T] {
+	var cells [][]T
+
+	var rows, cols int
+	for y, l := range util.ReadInput(definition, "\n") {
+		rows = y
+		var row []T
+		for x, n := range l {
+			cols = x
+			row = append(row, fn(x, y, byte(n)))
+		}
+
+		cells = append(cells, row)
+	}
+
+	return Map[T]{Columns: cols + 1, Rows: rows + 1, Cells: cells}
+}
+
 func MapFromCoordinates(coordinates []Coordinate) Map[int] {
 	var rows, cols int
 	for _, c := range coordinates {
