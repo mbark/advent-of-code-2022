@@ -3,11 +3,17 @@ package maps
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/util"
+	"strings"
 )
 
 type Coordinate struct {
 	X int
 	Y int
+}
+
+func CoordinateFromString(s string) Coordinate {
+	split := strings.Split(s, ",")
+	return Coordinate{X: util.ParseInt[int](split[0]), Y: util.ParseInt[int](split[1])}
 }
 
 func (c Coordinate) Up() Coordinate {
