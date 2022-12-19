@@ -32,6 +32,10 @@ func (c Coordinate) Left() Coordinate {
 	return Coordinate{X: c.X - 1, Y: c.Y}
 }
 
+func (c Coordinate) Add(co Coordinate) Coordinate {
+	return Coordinate{X: c.X + co.X, Y: c.Y + co.Y}
+}
+
 func (c Coordinate) Adjacent() []Coordinate {
 	return []Coordinate{
 		{X: c.X, Y: c.Y + 1}, // up
