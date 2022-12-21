@@ -33,6 +33,18 @@ func (c Coordinate3D) Diff(to Coordinate3D) Coordinate3D {
 	}
 }
 
+func (c Coordinate3D) Adjacent() []Coordinate3D {
+	return []Coordinate3D{
+		{Z: c.Z, X: c.X, Y: c.Y + 1}, // up
+		{Z: c.Z, X: c.X + 1, Y: c.Y}, // right
+		{Z: c.Z, X: c.X, Y: c.Y - 1}, // down
+		{Z: c.Z, X: c.X - 1, Y: c.Y}, // left
+
+		{Z: c.Z + 1, X: c.X, Y: c.Y}, // z-up
+		{Z: c.Z - 1, X: c.X, Y: c.Y}, // z-down
+	}
+}
+
 func (c Coordinate3D) ManhattanDistance(to Coordinate3D) int {
 	d := c.Diff(to)
 	return d.X + d.Y + d.Z
