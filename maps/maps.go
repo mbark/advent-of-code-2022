@@ -54,9 +54,9 @@ func New[T any](definition string, fn func(x, y int, b byte) T) Map[T] {
 	return Map[T]{Columns: cols + 1, Rows: rows + 1, Cells: cells}
 }
 
-func MapFromCoordinates(coordinates []Coordinate) Map[int] {
+func MapFromCoordinates[T any](coordinates map[Coordinate]T) Map[T] {
 	var rows, cols int
-	for _, c := range coordinates {
+	for c := range coordinates {
 		if c.Y > rows {
 			rows = c.Y
 		}
@@ -67,16 +67,16 @@ func MapFromCoordinates(coordinates []Coordinate) Map[int] {
 
 	rows, cols = rows+1, cols+1
 
-	cells := make([][]int, rows)
+	cells := make([][]T, rows)
 	for i := range cells {
-		cells[i] = make([]int, cols)
+		cells[i] = make([]T, cols)
 	}
 
-	for _, c := range coordinates {
-		cells[c.Y][c.X] = 1
+	for c, val := range coordinates {
+		cells[c.Y][c.X] = val
 	}
 
-	return Map[int]{Columns: cols, Rows: rows, Cells: cells}
+	return Map[T]{Columns: cols, Rows: rows, Cells: cells}
 }
 
 func (m Map[T]) WithPadding(n, e, s, w int) Map[T] {

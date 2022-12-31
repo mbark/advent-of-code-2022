@@ -70,6 +70,48 @@ func (c Coordinate) ManhattanDistance(co Coordinate) int {
 	return util.AbsInt(c.X-co.X) + util.AbsInt(c.Y-co.Y)
 }
 
+type Direction struct{ X, Y int }
+
+var (
+	Up    = Direction{Y: -1}
+	Right = Direction{X: 1}
+	Down  = Direction{Y: 1}
+	Left  = Direction{X: -1}
+)
+
+func (d Direction) Rotate(direction Direction) Direction {
+	order := []Direction{Up, Right, Down, Left}
+	index := map[Direction]int{Up: 0, Right: 1, Down: 2, Left: 3}
+
+	switch direction {
+	case Right:
+		return order[(index[d]+1)%len(index)]
+	case Left:
+		return order[(len(index)+index[d]-1)%len(index)]
+	default:
+		return d
+	}
+}
+
+func (d Direction) Apply(c Coordinate) Coordinate {
+	return Coordinate{X: c.X + d.X, Y: c.Y + d.Y}
+}
+
+func (d Direction) String() string {
+	switch d {
+	case Left:
+		return "<"
+	case Right:
+		return ">"
+	case Up:
+		return "^"
+	case Down:
+		return "v"
+	}
+
+	return ""
+}
+
 type CoordinateArray struct {
 	Coordinates []Coordinate
 
