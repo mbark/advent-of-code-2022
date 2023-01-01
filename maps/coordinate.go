@@ -77,6 +77,15 @@ var (
 	Right = Direction{X: 1}
 	Down  = Direction{Y: 1}
 	Left  = Direction{X: -1}
+
+	North     = Up
+	East      = Right
+	South     = Down
+	West      = Left
+	NorthEast = Direction{Y: -1, X: 1}
+	NorthWest = Direction{Y: -1, X: -1}
+	SouthEast = Direction{Y: 1, X: 1}
+	SouthWest = Direction{Y: 1, X: -1}
 )
 
 func (d Direction) Rotate(direction Direction) Direction {
@@ -99,6 +108,22 @@ func (d Direction) Apply(c Coordinate) Coordinate {
 
 func (d Direction) String() string {
 	switch d {
+	case North:
+		return "N"
+	case East:
+		return "E"
+	case West:
+		return "W"
+	case South:
+		return "S"
+	case NorthEast:
+		return "NE"
+	case NorthWest:
+		return "NW"
+	case SouthEast:
+		return "SE"
+	case SouthWest:
+		return "SW"
 	case Left:
 		return "<"
 	case Right:

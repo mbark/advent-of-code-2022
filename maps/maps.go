@@ -110,7 +110,7 @@ func (m Map[T]) Coordinates() []Coordinate {
 	coordinates := make([]Coordinate, m.Length())
 	for y, row := range m.Cells {
 		for x := range row {
-			coordinates[y*m.Rows+x] = Coordinate{Y: y, X: x}
+			coordinates[y*m.Columns+x] = Coordinate{Y: y, X: x}
 		}
 	}
 
