@@ -4,6 +4,7 @@ import "C"
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
@@ -37,15 +38,15 @@ func (l line) String() string {
 func (l line) coordinates() []maps.Coordinate {
 	var coords []maps.Coordinate
 	if l.start.X != l.end.X {
-		xMin := util.MinInt(l.start.X, l.end.X)
-		xMax := util.MaxInt(l.start.X, l.end.X)
+		xMin := maths.MinInt(l.start.X, l.end.X)
+		xMax := maths.MaxInt(l.start.X, l.end.X)
 
 		for x := xMin; x <= xMax; x++ {
 			coords = append(coords, maps.Coordinate{X: x, Y: l.start.Y})
 		}
 	} else {
-		yMin := util.MinInt(l.start.Y, l.end.Y)
-		yMax := util.MaxInt(l.start.Y, l.end.Y)
+		yMin := maths.MinInt(l.start.Y, l.end.Y)
+		yMax := maths.MaxInt(l.start.Y, l.end.Y)
 
 		for y := yMin; y <= yMax; y++ {
 			coords = append(coords, maps.Coordinate{Y: y, X: l.start.X})

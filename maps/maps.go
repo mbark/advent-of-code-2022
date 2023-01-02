@@ -230,38 +230,50 @@ func (m Map[T]) String() string {
 	return sb.String()
 }
 
+func (m Map[T]) Stringf(sprintf func(c Coordinate, val T) string) string {
+	var sb strings.Builder
+	for y, row := range m.Cells {
+		for x, cell := range row {
+			sb.WriteString(sprintf(Coordinate{X: x, Y: y}, cell))
+		}
+		sb.WriteString("\n")
+	}
+
+	return sb.String()
+}
+
 func (m Map[T]) Length() int {
 	return m.Rows * m.Columns
 }
 
-type CoordinateItem struct {
-	Coordinate Coordinate
-	Priority   int
-	Index      int
+type Item[T any] struct {
+	Value    T
+	Priority int
+	Index    int
 }
 
-type PriorityQueue []*CoordinateItem
+type PriorityQueue[T any] []*Item[T]
 
-func (pq PriorityQueue) Len() int { return len(pq) }
+func (pq PriorityQueue[T]) Len() int { return len(pq) }
 
-func (pq PriorityQueue) Less(i, j int) bool {
+func (pq PriorityQueue[T]) Less(i, j int) bool {
 	return pq[i].Priority < pq[j].Priority
 }
 
-func (pq PriorityQueue) Swap(i, j int) {
+func (pq PriorityQueue[T]) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 	pq[i].Index = i
 	pq[j].Index = j
 }
 
-func (pq *PriorityQueue) Push(x interface{}) {
+func (pq *PriorityQueue[T]) Push(x interface{}) {
 	n := len(*pq)
-	item := x.(*CoordinateItem)
+	item := x.(*Item[T])
 	item.Index = n
 	*pq = append(*pq, item)
 }
 
-func (pq *PriorityQueue) Pop() interface{} {
+func (pq *PriorityQueue[T]) Pop() interface{} {
 	old := *pq
 	n := len(old)
 	item := old[n-1]
@@ -271,8 +283,8 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *PriorityQueue) Update(item *CoordinateItem, value Coordinate, priority int) {
-	item.Coordinate = value
+func (pq *PriorityQueue[T]) Update(item *Item[T], value T, priority int) {
+	item.Value = value
 	item.Priority = priority
 	heap.Fix(pq, item.Index)
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strconv"
 	"strings"
@@ -101,7 +102,7 @@ func second(instructions []instruction) string {
 		row := c / 40
 		crt := c % 40
 
-		if util.AbsInt(x-crt) <= 1 {
+		if maths.AbsInt(x-crt) <= 1 {
 			m.Set(maps.Coordinate{Y: row, X: crt}, true)
 		}
 

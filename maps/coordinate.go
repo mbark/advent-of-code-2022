@@ -2,6 +2,7 @@ package maps
 
 import (
 	"fmt"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
@@ -67,7 +68,7 @@ func (c Coordinate) IsZero() bool {
 }
 
 func (c Coordinate) ManhattanDistance(co Coordinate) int {
-	return util.AbsInt(c.X-co.X) + util.AbsInt(c.Y-co.Y)
+	return maths.AbsInt(c.X-co.X) + maths.AbsInt(c.Y-co.Y)
 }
 
 type Direction struct{ X, Y int }
@@ -108,6 +109,14 @@ func (d Direction) Apply(c Coordinate) Coordinate {
 
 func (d Direction) String() string {
 	switch d {
+	case Left:
+		return "<"
+	case Right:
+		return ">"
+	case Up:
+		return "^"
+	case Down:
+		return "v"
 	case North:
 		return "N"
 	case East:
@@ -124,14 +133,6 @@ func (d Direction) String() string {
 		return "SE"
 	case SouthWest:
 		return "SW"
-	case Left:
-		return "<"
-	case Right:
-		return ">"
-	case Up:
-		return "^"
-	case Down:
-		return "v"
 	}
 
 	return ""

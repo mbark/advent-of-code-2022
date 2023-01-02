@@ -3,7 +3,6 @@ package util
 import (
 	"flag"
 	"fmt"
-	"math"
 	"os"
 	"runtime/pprof"
 	"strconv"
@@ -68,28 +67,6 @@ func WithProfiling() func() {
 	return pprof.StopCPUProfile
 }
 
-func MaxInt(i1, i2 int) int {
-	if i1 > i2 {
-		return i1
-	}
-	return i2
-}
-
-func MinInt(i1, i2 int) int {
-	if i1 < i2 {
-		return i1
-	}
-	return i2
-}
-
-func AbsInt(i int) int {
-	if i < 0 {
-		return -i
-	}
-
-	return i
-}
-
 func ParseInt[T int64 | int32 | int](s string) T {
 	i, _ := strconv.ParseInt(s, 10, 64)
 	return T(i)
@@ -98,8 +75,4 @@ func ParseInt[T int64 | int32 | int](s string) T {
 func Btoi[T int64 | int32 | int](s string) T {
 	i, _ := strconv.ParseInt(s, 2, 64)
 	return T(i)
-}
-
-func PowInt(x, y int) int {
-	return int(math.Pow(float64(x), float64(y)))
 }

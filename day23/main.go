@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
-	"github.com/mbark/advent-of-code-2022/util"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"math"
 	"strings"
 )
@@ -117,11 +117,11 @@ func first(elves map[maps.Coordinate]*terrain) int {
 	minX, minY := math.MaxInt, math.MaxInt
 	maxX, maxY := 0, 0
 	for c := range elves {
-		minX = util.MinInt(minX, c.X)
-		minY = util.MinInt(minY, c.Y)
+		minX = maths.MinInt(minX, c.X)
+		minY = maths.MinInt(minY, c.Y)
 
-		maxX = util.MaxInt(maxX, c.X)
-		maxY = util.MaxInt(maxY, c.Y)
+		maxX = maths.MaxInt(maxX, c.X)
+		maxY = maths.MaxInt(maxY, c.Y)
 	}
 
 	return (maxX-minX+1)*(maxY-minY+1) - len(elves)
@@ -204,8 +204,8 @@ func second(elves map[maps.Coordinate]*terrain) int {
 func print(m map[maps.Coordinate]*terrain) {
 	minX, minY := math.MaxInt, math.MaxInt
 	for c := range m {
-		minX = util.MinInt(minX, c.X)
-		minY = util.MinInt(minY, c.Y)
+		minX = maths.MinInt(minX, c.X)
+		minY = maths.MinInt(minY, c.Y)
 	}
 
 	coords := make(map[maps.Coordinate]*terrain)

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"math"
 )
@@ -65,12 +66,12 @@ func second(coords []maps.Coordinate3D) int {
 	for _, c := range coords {
 		cubes[c] = true
 
-		yMin = util.MinInt(c.Y, yMin)
-		yMax = util.MaxInt(c.Y, yMax)
-		xMin = util.MinInt(c.X, xMin)
-		xMax = util.MaxInt(c.X, xMax)
-		zMin = util.MinInt(c.Z, zMin)
-		zMax = util.MaxInt(c.Z, zMax)
+		yMin = maths.MinInt(c.Y, yMin)
+		yMax = maths.MaxInt(c.Y, yMax)
+		xMin = maths.MinInt(c.X, xMin)
+		xMax = maths.MaxInt(c.X, xMax)
+		zMin = maths.MinInt(c.Z, zMin)
+		zMax = maths.MaxInt(c.Z, zMax)
 	}
 
 	min := maps.Coordinate3D{X: xMin, Y: yMin, Z: zMin}

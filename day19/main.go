@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
@@ -89,7 +90,7 @@ func first(blueprints []blueprint) int {
 
 func second(blueprints []blueprint) int {
 	sum := 1
-	for _, b := range blueprints[:util.MinInt(3, len(blueprints))] {
+	for _, b := range blueprints[:maths.MinInt(3, len(blueprints))] {
 		memo = make(map[int]int)
 		hypothetical = make(map[int]int)
 		initial := state{
@@ -144,7 +145,7 @@ func hypotheticalGeodes(b blueprint, s state, maxTime int) int {
 }
 
 func nextBot1(needs, has, bots int) int {
-	needed := needs - util.MinInt(has, needs)
+	needed := needs - maths.MinInt(has, needs)
 	takes := needed / bots
 	if needed%bots > 0 {
 		takes += 1
@@ -157,7 +158,7 @@ func nextBot2(needs1, has1, bots1, needs2, has2, bots2 int) int {
 	takes1 := nextBot1(needs1, has1, bots1)
 	takes2 := nextBot1(needs2, has2, bots2)
 
-	return util.MaxInt(takes1, takes2)
+	return maths.MaxInt(takes1, takes2)
 }
 
 var memo = make(map[int]int)
@@ -166,10 +167,10 @@ var loops int
 
 func needsAtMost(b blueprint) (int, int, int) {
 	var ore int
-	ore = util.MaxInt(ore, b.ore.ore)
-	ore = util.MaxInt(ore, b.clay.ore)
-	ore = util.MaxInt(ore, b.obsidian.ore)
-	ore = util.MaxInt(ore, b.geode.ore)
+	ore = maths.MaxInt(ore, b.ore.ore)
+	ore = maths.MaxInt(ore, b.clay.ore)
+	ore = maths.MaxInt(ore, b.obsidian.ore)
+	ore = maths.MaxInt(ore, b.geode.ore)
 
 	return ore, b.obsidian.clay, b.geode.obsidian
 }

@@ -2,7 +2,7 @@ package maps
 
 import (
 	"fmt"
-	"github.com/mbark/advent-of-code-2022/util"
+	"github.com/mbark/advent-of-code-2022/maths"
 )
 
 type Cuboid struct {
@@ -37,7 +37,7 @@ func (c Cuboid) String() string {
 }
 
 func (c Cuboid) Size() int {
-	return util.AbsInt(1 *
+	return maths.AbsInt(1 *
 		(c.To.X - c.From.X) *
 		(c.To.Y - c.From.Y) *
 		(c.To.Z - c.From.Z))
@@ -49,22 +49,22 @@ func (c Cuboid) Subdivide(co Cuboid) ([]Cuboid, *Cuboid, []Cuboid) {
 	}
 
 	xvals := []int{
-		util.MinInt(c.From.X, co.From.X),
-		util.MaxInt(c.From.X, co.From.X),
-		util.MinInt(c.To.X, co.To.X),
-		util.MaxInt(c.To.X, co.To.X),
+		maths.MinInt(c.From.X, co.From.X),
+		maths.MaxInt(c.From.X, co.From.X),
+		maths.MinInt(c.To.X, co.To.X),
+		maths.MaxInt(c.To.X, co.To.X),
 	}
 	yvals := []int{
-		util.MinInt(c.From.Y, co.From.Y),
-		util.MaxInt(c.From.Y, co.From.Y),
-		util.MinInt(c.To.Y, co.To.Y),
-		util.MaxInt(c.To.Y, co.To.Y),
+		maths.MinInt(c.From.Y, co.From.Y),
+		maths.MaxInt(c.From.Y, co.From.Y),
+		maths.MinInt(c.To.Y, co.To.Y),
+		maths.MaxInt(c.To.Y, co.To.Y),
 	}
 	zvals := []int{
-		util.MinInt(c.From.Z, co.From.Z),
-		util.MaxInt(c.From.Z, co.From.Z),
-		util.MinInt(c.To.Z, co.To.Z),
-		util.MaxInt(c.To.Z, co.To.Z),
+		maths.MinInt(c.From.Z, co.From.Z),
+		maths.MaxInt(c.From.Z, co.From.Z),
+		maths.MinInt(c.To.Z, co.To.Z),
+		maths.MaxInt(c.To.Z, co.To.Z),
 	}
 
 	var cCuboids []Cuboid
@@ -102,9 +102,9 @@ func (c Cuboid) Subdivide(co Cuboid) ([]Cuboid, *Cuboid, []Cuboid) {
 }
 
 func (c Cuboid) IsOverlapping(co Cuboid) bool {
-	minx := util.MaxInt(c.From.X, co.From.X)
-	miny := util.MaxInt(c.From.Y, co.From.Y)
-	minz := util.MaxInt(c.From.Z, co.From.Z)
+	minx := maths.MaxInt(c.From.X, co.From.X)
+	miny := maths.MaxInt(c.From.Y, co.From.Y)
+	minz := maths.MaxInt(c.From.Z, co.From.Z)
 
 	return c.From.X <= minx && c.To.X >= minx &&
 		co.From.X <= minx && co.To.X > minx &&
@@ -121,14 +121,14 @@ func (c Cuboid) Overlapping(co Cuboid) *Cuboid {
 
 	return &Cuboid{
 		From: Coordinate3D{
-			X: util.MaxInt(co.From.X, c.From.X),
-			Y: util.MaxInt(co.From.Y, c.From.Y),
-			Z: util.MaxInt(co.From.Z, c.From.Z),
+			X: maths.MaxInt(co.From.X, c.From.X),
+			Y: maths.MaxInt(co.From.Y, c.From.Y),
+			Z: maths.MaxInt(co.From.Z, c.From.Z),
 		},
 		To: Coordinate3D{
-			X: util.MinInt(co.To.X, c.To.X),
-			Y: util.MinInt(co.To.Y, c.To.Y),
-			Z: util.MinInt(co.To.Z, c.To.Z),
+			X: maths.MinInt(co.To.X, c.To.X),
+			Y: maths.MinInt(co.To.Y, c.To.Y),
+			Z: maths.MinInt(co.To.Z, c.To.Z),
 		},
 	}
 }

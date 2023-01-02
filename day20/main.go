@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
@@ -112,7 +113,7 @@ func first(numbers []int) int {
 
 	for i := 0; i < len(list.nodes); i++ {
 		start := list.nodes[i]
-		steps := util.AbsInt(start.val) % (len(numbers) - 1)
+		steps := maths.AbsInt(start.val) % (len(numbers) - 1)
 
 		var swap func(at *Node[int])
 		if start.val > 0 {
@@ -149,7 +150,7 @@ func second(numbers []int) int {
 	for i := 0; i < 10; i++ {
 		for i := 0; i < len(list.nodes); i++ {
 			start := list.nodes[i]
-			steps := util.AbsInt(start.val) % (len(numbers) - 1)
+			steps := maths.AbsInt(start.val) % (len(numbers) - 1)
 
 			var swap func(at *Node[int])
 			if start.val > 0 {

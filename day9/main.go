@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 )
 
@@ -108,8 +109,8 @@ func second(steps []step) int {
 }
 
 func move(head, tail maps.Coordinate) maps.Coordinate {
-	distanceY := util.AbsInt(head.Y - tail.Y)
-	distanceX := util.AbsInt(head.X - tail.X)
+	distanceY := maths.AbsInt(head.Y - tail.Y)
+	distanceX := maths.AbsInt(head.X - tail.X)
 
 	var yMove int
 	if head.Y > tail.Y {

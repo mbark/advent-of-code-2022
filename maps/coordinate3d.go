@@ -2,6 +2,7 @@ package maps
 
 import (
 	"fmt"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
 )
@@ -27,9 +28,9 @@ func (c Coordinate3D) String() string {
 
 func (c Coordinate3D) Diff(to Coordinate3D) Coordinate3D {
 	return Coordinate3D{
-		X: util.AbsInt(c.X - to.X),
-		Y: util.AbsInt(c.Y - to.Y),
-		Z: util.AbsInt(c.Z - to.Z),
+		X: maths.AbsInt(c.X - to.X),
+		Y: maths.AbsInt(c.Y - to.Y),
+		Z: maths.AbsInt(c.Z - to.Z),
 	}
 }
 

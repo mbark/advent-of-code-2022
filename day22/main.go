@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mbark/advent-of-code-2022/maps"
+	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
 	"math"
 	"strings"
@@ -57,10 +58,10 @@ func first(m map[maps.Coordinate]terrain, instructions []instruction) int {
 			minY[c.X] = math.MaxInt
 		}
 
-		minX[c.Y] = util.MinInt(minX[c.Y], c.X)
-		minY[c.X] = util.MinInt(minY[c.X], c.Y)
-		maxX[c.Y] = util.MaxInt(maxX[c.Y], c.X)
-		maxY[c.X] = util.MaxInt(maxY[c.X], c.Y)
+		minX[c.Y] = maths.MinInt(minX[c.Y], c.X)
+		minY[c.X] = maths.MinInt(minY[c.X], c.Y)
+		maxX[c.Y] = maths.MaxInt(maxX[c.Y], c.X)
+		maxY[c.X] = maths.MaxInt(maxY[c.X], c.Y)
 	}
 
 	wrap := func(_, next maps.Coordinate, direction maps.Direction) maps.Coordinate {
@@ -124,8 +125,8 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 
 	var maxY, maxX int
 	for c := range m {
-		maxX = util.MaxInt(maxX, c.X)
-		maxY = util.MaxInt(maxY, c.Y)
+		maxX = maths.MaxInt(maxX, c.X)
+		maxY = maths.MaxInt(maxY, c.Y)
 	}
 
 	var segments []*segment
@@ -155,14 +156,14 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 			}
 
 			switch {
-			case s1.startX == s2.startX && util.AbsInt(s1.startY-s2.startY) == length:
+			case s1.startX == s2.startX && maths.AbsInt(s1.startY-s2.startY) == length:
 				if s1.startY < s2.startY {
 					s1.down = s2
 				} else {
 					s1.up = s2
 				}
 
-			case s1.startY == s2.startY && util.AbsInt(s1.startX-s2.startX) == length:
+			case s1.startY == s2.startY && maths.AbsInt(s1.startX-s2.startX) == length:
 				if s1.startX < s2.startX {
 					s1.right = s2
 				} else {
@@ -356,7 +357,7 @@ func walk(m map[maps.Coordinate]terrain, instructions []instruction, wrap func(a
 	minX := math.MaxInt
 	for c := range m {
 		if c.Y == 0 {
-			minX = util.MinInt(minX, c.X)
+			minX = maths.MinInt(minX, c.X)
 		}
 	}
 	at := maps.Coordinate{X: minX, Y: 0}
