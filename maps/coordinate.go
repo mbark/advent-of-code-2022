@@ -2,9 +2,10 @@ package maps
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
-	"strings"
 )
 
 type Coordinate struct {
@@ -105,6 +106,37 @@ func (d Direction) Rotate(direction Direction) Direction {
 
 func (d Direction) Apply(c Coordinate) Coordinate {
 	return Coordinate{X: c.X + d.X, Y: c.Y + d.Y}
+}
+
+func (d Direction) Opposite() Direction {
+	switch d {
+	case Up:
+		return Down
+	case Down:
+		return Up
+	case Right:
+		return Left
+	case Left:
+		return Right
+	case North:
+		return South
+	case South:
+		return North
+	case East:
+		return West
+	case West:
+		return East
+	case NorthEast:
+		return SouthWest
+	case SouthWest:
+		return NorthEast
+	case NorthWest:
+		return SouthEast
+	case SouthEast:
+		return NorthWest
+	}
+
+	panic("unknown direction")
 }
 
 func (d Direction) String() string {

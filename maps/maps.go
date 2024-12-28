@@ -4,8 +4,9 @@ import "C"
 import (
 	"container/heap"
 	"fmt"
-	"github.com/mbark/advent-of-code-2022/util"
 	"strings"
+
+	"github.com/mbark/advent-of-code-2022/util"
 )
 
 type Map[T any] struct {

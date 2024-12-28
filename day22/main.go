@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"strings"
+
 	"github.com/mbark/advent-of-code-2022/maps"
 	"github.com/mbark/advent-of-code-2022/maths"
 	"github.com/mbark/advent-of-code-2022/util"
-	"math"
-	"strings"
 )
 
 func main() {
-	groups := util.ReadInput(testInput, "\n\n")
+	groups := util.ReadInput(Input, "\n\n")
 	m := make(map[maps.Coordinate]terrain)
 	for y, row := range strings.Split(groups[0], "\n") {
 		for x, c := range row {
@@ -64,19 +65,19 @@ func first(m map[maps.Coordinate]terrain, instructions []instruction) int {
 		maxY[c.X] = maths.MaxInt(maxY[c.X], c.Y)
 	}
 
-	wrap := func(_, next maps.Coordinate, direction maps.Direction) maps.Coordinate {
+	wrap := func(_, next maps.Coordinate, direction maps.Direction) (maps.Coordinate, maps.Direction) {
 		switch direction {
 		case maps.Left:
-			return maps.Coordinate{X: maxX[next.Y], Y: next.Y}
+			return maps.Coordinate{X: maxX[next.Y], Y: next.Y}, direction
 		case maps.Right:
-			return maps.Coordinate{X: minX[next.Y], Y: next.Y}
+			return maps.Coordinate{X: minX[next.Y], Y: next.Y}, direction
 		case maps.Up:
-			return maps.Coordinate{X: next.X, Y: maxY[next.X]}
+			return maps.Coordinate{X: next.X, Y: maxY[next.X]}, direction
 		case maps.Down:
-			return maps.Coordinate{X: next.X, Y: minY[next.X]}
+			return maps.Coordinate{X: next.X, Y: minY[next.X]}, direction
 
 		default:
-			return next
+			return next, direction
 		}
 	}
 
@@ -92,36 +93,6 @@ func sideLength(m map[maps.Coordinate]terrain) int {
 func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 	length := sideLength(m)
 	bySegment := make(map[maps.Coordinate]*segment)
-
-	wrap := func(at, _ maps.Coordinate, direction maps.Direction) maps.Coordinate {
-		s := bySegment[at]
-		rel, ok := s.toRelative[at]
-		fmt.Println("convert from absolute to relative", at, rel, ok)
-
-		var nexts *segment
-		var nextc maps.Coordinate
-		switch direction {
-		case maps.Left:
-			nexts = s.left
-			nextc = maps.Coordinate{X: length - 1, Y: rel.Y}
-		case maps.Right:
-			nexts = s.right
-			nextc = maps.Coordinate{X: 0, Y: rel.Y}
-		case maps.Up:
-			nexts = s.up
-			nextc = maps.Coordinate{X: rel.X, Y: length - 1}
-		case maps.Down:
-			nexts = s.down
-			nextc = maps.Coordinate{X: rel.X, Y: 0}
-
-		default:
-			panic("can't wrap without direction")
-		}
-
-		fmt.Println(s, direction)
-		fmt.Println("new coordinate is", nextc)
-		return nexts.toAbsolute[nextc]
-	}
 
 	var maxY, maxX int
 	for c := range m {
@@ -149,9 +120,9 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 		}
 	}
 
-	for _, s1 := range segments {
-		for _, s2 := range segments {
-			if s1 == s2 {
+	for i, s1 := range segments {
+		for j, s2 := range segments {
+			if i == j {
 				continue
 			}
 
@@ -182,29 +153,29 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 				c.d4 = s.down
 			}
 			if s.up != nil {
-				c.d2 = s.up
+				c.d3 = s.up
 			}
 			if s.left != nil {
-				c.d3 = s.left
+				c.d2 = s.left
 			}
 			if s.right != nil {
-				c.d6 = s.right
+				c.d5 = s.right
 			}
 		}
 
 		s = c.d2
 		if s != nil {
 			if s.down != nil {
-				c.d1 = s.down
+				c.d3 = s.down
 			}
 			if s.up != nil {
-				c.d5 = s.up
+				c.d4 = s.up
 			}
 			if s.left != nil {
-				c.d6 = s.left
+				c.d1 = s.left
 			}
 			if s.right != nil {
-				c.d3 = s.right
+				c.d2 = s.right
 			}
 		}
 
@@ -214,42 +185,42 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 				c.d5 = s.down
 			}
 			if s.up != nil {
-				c.d1 = s.up
+				c.d2 = s.up
 			}
 			if s.left != nil {
 				c.d2 = s.left
-			}
-			if s.right != nil {
-				c.d4 = s.right
-			}
-		}
-
-		s = c.d4
-		if s != nil {
-			if s.down != nil {
-				c.d5 = s.down
-			}
-			if s.up != nil {
-				c.d1 = s.up
-			}
-			if s.left != nil {
-				c.d3 = s.left
 			}
 			if s.right != nil {
 				c.d6 = s.right
 			}
 		}
 
+		s = c.d4
+		if s != nil {
+			if s.down != nil {
+				c.d6 = s.down
+			}
+			if s.up != nil {
+				c.d1 = s.up
+			}
+			if s.left != nil {
+				c.d2 = s.left
+			}
+			if s.right != nil {
+				c.d5 = s.right
+			}
+		}
+
 		s = c.d5
 		if s != nil {
 			if s.down != nil {
-				c.d2 = s.down
+				c.d4 = s.down
 			}
 			if s.up != nil {
-				c.d4 = s.up
+				c.d3 = s.up
 			}
 			if s.left != nil {
-				c.d3 = s.left
+				c.d1 = s.left
 			}
 			if s.right != nil {
 				c.d6 = s.right
@@ -259,49 +230,170 @@ func second(m map[maps.Coordinate]terrain, instructions []instruction) int {
 		s = c.d6
 		if s != nil {
 			if s.down != nil {
-				c.d5 = s.down
+				c.d3 = s.down
 			}
 			if s.up != nil {
 				c.d4 = s.up
 			}
 			if s.left != nil {
-				c.d5 = s.left
+				c.d2 = s.left
 			}
 			if s.right != nil {
-				c.d1 = s.right
+				c.d5 = s.right
 			}
 		}
 	}
 
 	c.d1.down = c.d4
-	c.d1.up = c.d2
-	c.d1.left = c.d3
-	c.d1.right = c.d6
+	c.d1.up = c.d3
+	c.d1.left = c.d2
+	c.d1.right = c.d5
 
-	c.d2.down = c.d1
-	c.d2.up = c.d5
-	c.d2.left = c.d6
-	c.d2.right = c.d3
+	c.d2.down = c.d3
+	c.d2.up = c.d4
+	c.d2.left = c.d1
+	c.d2.right = c.d6
 
 	c.d3.down = c.d5
-	c.d3.up = c.d1
-	c.d3.left = c.d2
-	c.d3.right = c.d4
+	c.d3.up = c.d2
+	c.d3.left = c.d1
+	c.d3.right = c.d6
 
-	c.d4.down = c.d5
+	c.d4.down = c.d6
 	c.d4.up = c.d1
-	c.d4.left = c.d3
-	c.d4.right = c.d6
+	c.d4.left = c.d2
+	c.d4.right = c.d5
 
-	c.d5.down = c.d2
-	c.d5.up = c.d4
-	c.d5.left = c.d3
+	c.d5.down = c.d4
+	c.d5.up = c.d3
+	c.d5.left = c.d1
 	c.d5.right = c.d6
 
-	c.d6.down = c.d5
+	c.d6.down = c.d3
 	c.d6.up = c.d4
-	c.d6.left = c.d5
-	c.d6.right = c.d1
+	c.d6.left = c.d2
+	c.d6.right = c.d5
+
+	c.d1.id = "1"
+	c.d2.id = "2"
+	c.d3.id = "3"
+	c.d4.id = "4"
+	c.d5.id = "5"
+	c.d6.id = "6"
+
+	wrap := func(at, _ maps.Coordinate, direction maps.Direction) (maps.Coordinate, maps.Direction) {
+		s := bySegment[at]
+		at = s.toRelative[at]
+
+		var nexts *segment
+		switch direction {
+		case maps.Left:
+			nexts = s.left
+		case maps.Right:
+			nexts = s.right
+		case maps.Up:
+			nexts = s.up
+		case maps.Down:
+			nexts = s.down
+		}
+
+		var nextc maps.Coordinate
+		var nextdir maps.Direction
+		switch s {
+		case c.d1:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: at.X, Y: 0}
+				nextdir = maps.Down
+			case maps.Up:
+				nextc = maps.Coordinate{X: 0, Y: at.X}
+				nextdir = maps.Right
+			case maps.Left:
+				nextc = maps.Coordinate{X: 0, Y: maths.AbsInt(length - 1 - at.Y)}
+				nextdir = maps.Right
+			case maps.Right:
+				nextc = maps.Coordinate{X: 0, Y: at.Y}
+				nextdir = maps.Right
+			}
+		case c.d2:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: at.X, Y: 0}
+				nextdir = maps.Down
+			case maps.Up:
+				nextc = maps.Coordinate{X: 0, Y: at.X}
+				nextdir = maps.Right
+			case maps.Left:
+				nextc = maps.Coordinate{X: 0, Y: maths.AbsInt(length - 1 - at.Y)}
+				nextdir = maps.Right
+			case maps.Right:
+				nextc = maps.Coordinate{X: 0, Y: at.Y}
+				nextdir = maps.Right
+			}
+		case c.d3:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: at.X, Y: 0}
+				nextdir = maps.Down
+			case maps.Up:
+				nextc = maps.Coordinate{X: at.X, Y: length - 1}
+				nextdir = maps.Up
+			case maps.Left:
+				nextc = maps.Coordinate{X: at.Y, Y: 0}
+				nextdir = maps.Down
+			case maps.Right:
+				nextc = maps.Coordinate{X: at.Y, Y: length - 1}
+				nextdir = maps.Up
+			}
+		case c.d4:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: at.X, Y: 0}
+				nextdir = maps.Down
+			case maps.Up:
+				nextc = maps.Coordinate{X: at.X, Y: length - 1}
+				nextdir = maps.Up
+			case maps.Left:
+				nextc = maps.Coordinate{X: at.Y, Y: 0}
+				nextdir = maps.Down
+			case maps.Right:
+				nextc = maps.Coordinate{X: at.Y, Y: length - 1}
+				nextdir = maps.Up
+			}
+		case c.d5:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: length - 1, Y: at.X}
+				nextdir = maps.Left
+			case maps.Up:
+				nextc = maps.Coordinate{X: at.X, Y: length - 1}
+				nextdir = maps.Up
+			case maps.Left:
+				nextc = maps.Coordinate{X: length - 1, Y: maths.AbsInt(length - 1 - at.Y)}
+				nextdir = maps.Left
+			case maps.Right:
+				nextc = maps.Coordinate{X: length - 1, Y: maths.AbsInt(length - 1 - at.Y)}
+				nextdir = maps.Left
+			}
+		case c.d6:
+			switch direction {
+			case maps.Down:
+				nextc = maps.Coordinate{X: length - 1, Y: at.X}
+				nextdir = maps.Left
+			case maps.Up:
+				nextc = maps.Coordinate{X: at.X, Y: length - 1}
+				nextdir = maps.Up
+			case maps.Left:
+				nextc = maps.Coordinate{X: length - 1, Y: at.Y}
+				nextdir = maps.Left
+			case maps.Right:
+				nextc = maps.Coordinate{X: length - 1, Y: maths.AbsInt(length - 1 - at.Y)}
+				nextdir = maps.Left
+			}
+		}
+
+		return nexts.toAbsolute[nextc], nextdir
+	}
 
 	return walk(m, instructions, wrap)
 }
@@ -335,6 +427,7 @@ func toSegment(m map[maps.Coordinate]terrain, yStart, xStart, length int) *segme
 
 	return &segment{
 		startY: yStart, startX: xStart,
+		endY: yStart + length - 1, endX: xStart + length - 1,
 		coordinates: coords,
 		toRelative:  toRelative,
 		toAbsolute:  toAbsolute,
@@ -342,18 +435,20 @@ func toSegment(m map[maps.Coordinate]terrain, yStart, xStart, length int) *segme
 }
 
 type segment struct {
-	startX, startY        int
-	coordinates           map[maps.Coordinate]terrain
-	toRelative            map[maps.Coordinate]maps.Coordinate
-	toAbsolute            map[maps.Coordinate]maps.Coordinate
-	up, down, left, right *segment
+	id                         string
+	startX, startY, endX, endY int
+	coordinates                map[maps.Coordinate]terrain
+	toRelative                 map[maps.Coordinate]maps.Coordinate
+	toAbsolute                 map[maps.Coordinate]maps.Coordinate
+	up, down, left, right      *segment
 }
 
 func (s segment) String() string {
-	return maps.MapFromCoordinates(s.coordinates).String()
+	return fmt.Sprintf("Segment d%s\n%s", s.id, maps.MapFromCoordinates(s.coordinates).String())
+
 }
 
-func walk(m map[maps.Coordinate]terrain, instructions []instruction, wrap func(at, next maps.Coordinate, direction maps.Direction) maps.Coordinate) int {
+func walk(m map[maps.Coordinate]terrain, instructions []instruction, wrap func(at, next maps.Coordinate, direction maps.Direction) (maps.Coordinate, maps.Direction)) int {
 	minX := math.MaxInt
 	for c := range m {
 		if c.Y == 0 {
@@ -373,21 +468,34 @@ func walk(m map[maps.Coordinate]terrain, instructions []instruction, wrap func(a
 		for i := 1; i <= ins.move && !done; i++ {
 			draw[at] = path{direction: direction}
 
-			fmt.Println()
-			fmt.Println(maps.MapFromCoordinates(draw))
-
 			next := direction.Apply(at)
 			t, ok := m[next]
+			nextDirection := direction
 			if !ok {
-				next = wrap(at, next, direction)
+				next, nextDirection = wrap(at, next, direction)
 				t = m[next]
+
+				{
+					backwards, dir := wrap(next, at, nextDirection.Opposite())
+					if backwards != at {
+						fmt.Println("at", at, "back", backwards)
+						panic("backwards coordinate didn't work")
+					}
+					if dir != direction.Opposite() {
+						fmt.Println("dir", direction, "back", dir)
+						panic("backwards direction didn't work")
+					}
+				}
 			}
 
 			switch {
 			case t == empty:
 				at = next
+				direction = nextDirection
 			case t == rock:
 				done = true
+			default:
+				panic("unexpected terrain")
 			}
 		}
 
@@ -406,6 +514,7 @@ func walk(m map[maps.Coordinate]terrain, instructions []instruction, wrap func(a
 		facing = 3
 	}
 
+	fmt.Println(maps.MapFromCoordinates(draw))
 	return 1000*(at.Y+1) + 4*(at.X+1) + facing
 }
 
